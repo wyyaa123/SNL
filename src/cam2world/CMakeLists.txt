@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(test)
+project(cam2world)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
+set(CMAKE_CXX_STANDARD 17)
 add_compile_options(-std=c++17)
 
 ## Find catkin macros and libraries
@@ -12,12 +13,14 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   roscpp
   sensor_msgs
+  cv_bridge
 )
+
+find_package(Eigen3 REQUIRED)
+find_package(OpenCV REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-find_package(Eigen3 REQUIRED)
-find_package(OpenCV REQUIRED)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -107,7 +110,7 @@ find_package(OpenCV REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES test
+#  LIBRARIES cam2world
 #  CATKIN_DEPENDS geometry_msgs nav_msgs roscpp sensor_msgs
 #  DEPENDS system_lib
 )
@@ -125,7 +128,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/test.cpp
+#   src/${PROJECT_NAME}/cam2world.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -136,7 +139,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/test_node.cpp)
+add_executable(${PROJECT_NAME} src/cam2world.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -149,9 +152,9 @@ include_directories(
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
@@ -200,7 +203,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_test.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_cam2world.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
