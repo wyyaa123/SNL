@@ -39,6 +39,7 @@ namespace SNL {
             std::deque<geometry_msgs::PointStampedConstPtr>::iterator&  AilgnMsgs(const geometry_msgs::PointStampedConstPtr& coorAtCamPtr);
             std::vector<ros::Subscriber>::iterator subBegin();
             std::vector<ros::Publisher>::iterator pubBegin();
+            ros::Publisher& operator[](size_t pos);
             void subEmplace(const ros::Subscriber& sub);
             void pubEmplace(const ros::Publisher& pub);
             size_t pubSize() &&;
@@ -47,10 +48,9 @@ namespace SNL {
             double THRESHOLD = 0.2;
             std::vector<ros::Subscriber> subs = {5, ros::Subscriber()};
             std::vector<ros::Publisher> pubs = {5, ros::Publisher()};
-            std::vector<std::deque<todo>> datas;
+            std::vector<std::deque<todo>> datas; 
             ros::Time time = ros::Time(THRESHOLD);
     };
-
     /**
      * @brief 返回第一个满足在阈值范围内的话题数据的迭代器，并将其之前的话题数据全部删除
      * 
@@ -106,7 +106,10 @@ namespace SNL {
     size_t Comunicate::pubSize() && {
         return pubs.size();
     }
-
+    /**
+     * @brief 返回当前发布队列的发布者个数
+     * @return size_t 
+     */
     size_t Comunicate::subSize() && {
         return subs.size();
     }
