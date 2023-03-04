@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+#workspace_dir
+.vscode/
+.git/
+build/
+devel/
+
+
