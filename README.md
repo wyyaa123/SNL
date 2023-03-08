@@ -33,16 +33,16 @@ git rm 要删除的文件名
 git rm -r 要删除的文件夹
 ```
 
+
+
 ## _git_error_
 
 ```
-
-
-
-
+Updates were rejected because the remote contains work that you do  not have locally. This is usually caused by another repository pushing to the same ref. You may want to first integrate the remote changes  (e.g., 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+原因在于：远程仓库存在本地仓库不存在的提交
+git pull
 ```
-
-
 
 
 
