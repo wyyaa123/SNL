@@ -33,6 +33,19 @@ git rm 要删除的文件名
 git rm -r 要删除的文件夹
 ```
 
+## _git_error_
+
+```
+
+
+
+
+```
+
+
+
+
+
 ## _markdown_
 
 ```
@@ -71,8 +84,6 @@ https://www.runoob.com/markdown/md-block.html
 这种不能创建的类型，是不是可以用于模板参数，并在模板函数里调用它们的静态方法;
 类的继承?(o゜▽゜)o☆
 
-
-
 ```
 
 
@@ -91,11 +102,6 @@ https://www.runoob.com/markdown/md-block.html
 高斯滤波
 
 双边滤波
-
-
-
-
-
 ```
 
 
