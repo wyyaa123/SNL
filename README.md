@@ -1,7 +1,7 @@
 # SNL
 想要写一个用于导航领域的C++标准库，~~不清楚要不要使用模板~~
 
-# ***.gitignore***
+## ***.gitignore***
 
 ```.ignore
 # 忽略所有的 .a 文件
@@ -90,9 +90,9 @@ https://www.runoob.com/markdown/md-block.html
 
 ## 2023年3月7日
 
-### 图像滤波
-
 ```none
+图像滤波
+
 滤波器指的是一种由一副图像$I(x, y)$根据像素点$x, y$附件的区域计算得到一副新图像$I^{'}(x, y)$ 的算法。
 
 均值滤波
@@ -136,4 +136,16 @@ FAST关键子：根据光度亮暗即灰度变化明显的地方。改进型的�
 <img decoding="async" src="./images/pyramid.png" width="30%" title = "图像金字塔" align = "center">
 
 <center style="font-size:14px;color:#C0C0C0;text-decoration:underline">图1.图像金字塔</center> 
+
+## 2023年3月12日
+
+```c++
+int a = NULL;
+int a1 = 0;
+new(&a) int(0); //a的内存空间在栈区
+int* p = &a; 
+int* p1 = &a1;
+int* p2 = new int();
+int* p3 = new int();
+```
 
