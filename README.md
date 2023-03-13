@@ -152,11 +152,23 @@ int* p2 = new int();
 int* p3 = new int();
 ```
 
+
+
 ## 2023年3月13日
 
+:star:相机成像原理：https://www.bilibili.com/video/BV1yE411o7kJ/?spm_id_from=333.1007.top_right_bar_window_history.content.click&vd_source=3487a7a535cad2041999f1ffa1007a8f
+
 ```
+💥曝光时间：曝光时间是指在摄影过程中，感光介质（如胶片或相机传感器）接收到光线的时间长度。简单来说，曝光时间就是快门打开的时
+间，用于控制感光介质受到光线的多少。
+
+如果物体的运动速度飞快，曝光时间就无法捕捉到物体的轮廓导致图像运动失真（欠采样失真?）
+
+💥帧率：帧率是指每秒钟播放的帧数，常用单位是fps（Frames Per Second）
+
 😍点扩散函数（英語：point spread function，简称PSF）😍
 是描述光学系统对点源解析能力的函数。因为点源在经过任何光学系统后都会由于衍射而形成一个扩大的像点，通过测量系统的点扩展函数，能
 够更准确地提取图像信息。
 ```
 
+:star:
