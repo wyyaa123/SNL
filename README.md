@@ -3,7 +3,7 @@
 
 ## ***.gitignore***
 
-```.ignore
+```
 # 忽略所有的 .a 文件
 *.a
 # 但跟踪所有的 lib.a，即便你在前面忽略了 .a 文件
@@ -20,27 +20,27 @@ doc/**/*.pdf
 
 ## *git*
 
-```
+```powershell
 #git提交代码
 
 git init #可能不需要
-git add 文件/文件夹名
+git add #文件/文件夹名
 git commit -m '提交描述'
 git push 
 
 #删除某一文件 参考：https://www.jianshu.com/p/b4f93946a27d
-git rm 要删除的文件名
-git rm -r 要删除的文件夹
+git rm '+ 要删除的文件名'
+git rm -r '+ 要删除的文件夹'
 ```
 
 
 
 ## _git_error_
 
-```
+```powershell
 Updates were rejected because the remote contains work that you do  not have locally. This is usually caused by another repository pushing to the same ref. You may want to first integrate the remote changes  (e.g., 'git pull ...') before pushing again.
 hint: See the 'Note about fast-forwards' in 'git push --help' for details.
-原因在于：远程仓库存在本地仓库不存在的提交
+#原因在于：远程仓库存在本地仓库不存在的提交
 git pull
 ```
 
@@ -48,8 +48,8 @@ git pull
 
 ## _markdown_
 
-```
-https://www.runoob.com/markdown/md-block.html
+```c++
+//https://www.runoob.com/markdown/md-block.html
 ```
 
 
@@ -58,7 +58,8 @@ https://www.runoob.com/markdown/md-block.html
 
 
 
-```none
+```c++
+/*
 #### 17:40:51
 
 ​	思考良久，决定还是记录时间来描述当前的想法。目前困惑于该如何用一个无序容器来容纳不同的ROS消息体类型。
@@ -75,24 +76,26 @@ https://www.runoob.com/markdown/md-block.html
 ​	对于两个任意带有header头并有时间戳的话题消息类型，可以将单个为基准的消息数据变量与另外一组消息类型的数据容器的元素进行时
 间戳比对，输出容器中满足在一定时间范围阈值（可自行设置）的消息数据。这个功能主要用于多传感器时间同步。代码解决单容器不能存放不
 同消息体的手段是采用std::any，采用模板编程。模板编程yyds!
+*/
 ```
 
 
 
 ## 2023年3月5日
 
-```
-
+```c++
+/*
 这种不能创建的类型，是不是可以用于模板参数，并在模板函数里调用它们的静态方法;
 类的继承?(o゜▽゜)o☆
-
+*/
 ```
 
 
 
 ## 2023年3月7日
 
-```none
+```c++
+/*
 😍图像滤波😍
 
 滤波器指的是一种由一副图像$I(x, y)$根据像素点$x, y$附件的区域计算得到一副新图像$I^{'}(x, y)$ 的算法。
@@ -104,13 +107,15 @@ https://www.runoob.com/markdown/md-block.html
 高斯滤波
 
 双边滤波
+*/
 ```
 
 
 
 ## 2023年3月8日
 
-```none
+```c++
+/*
 但是对于双目摄像头，当场景中的物体与摄像头的距离远大于两个摄像头基线的距离时，无人机的双目视觉就退化成了单目视觉问题🐴。
 
 《学习OPenCV3》
@@ -132,8 +137,9 @@ FAST关键子：根据光度亮暗即灰度变化明显的地方。改进型的�
 
 欧式距离：两点之间的直线距离。汉明距离：两个二进制串之间的汉明距离，指的是其不同位数的个数。
 
-特征点匹配：运算两幅图中的特征点之间的描述子的距离（欧式距离、汉明距离），描述子距离代表了两个特征点之间的相似程度。使用快速近
-邻（FLANN）算法
+特征点匹配：运算两幅图中的特征点之间的描述子的距离（欧式距离、汉明距离），描述子距离代表了两个特征点之间的相似程度。
+使用快速近邻（FLANN）算法
+*/
 ```
 
 <img decoding="async" src="./images/pyramid.png" width="30%" title = "图像金字塔" align = "center">
@@ -158,7 +164,8 @@ int* p3 = new int();
 
 :star:相机成像原理：https://www.bilibili.com/video/BV1yE411o7kJ/?spm_id_from=333.1007.top_right_bar_window_history.content.click&vd_source=3487a7a535cad2041999f1ffa1007a8f
 
-```
+```c++
+/*
 💥曝光时间：曝光时间是指在摄影过程中，感光介质（如胶片或相机传感器）接收到光线的时间长度。简单来说，曝光时间就是快门打开的时
 间，用于控制感光介质受到光线的多少。
 
@@ -184,21 +191,25 @@ ISO的值越高，相机的感光度就越高，可以在较暗的环境下拍�
 😍点扩散函数（英語：point spread function，简称PSF）😍
 是描述光学系统对点源解析能力的函数。
 因为点源在经过任何光学系统后都会由于衍射而形成一个扩大的像点，通过测量系统的点扩展函数，能够更准确地提取图像信息。
+*/
 ```
 
 :star:
 
 ## 2023年3月14日
 
-```
+```c++
+/*
 💥我们平常的精度都是到像素级别，坐标都是整数值。
 简单来将,亚像素就是0.5个像素,即我的定位不是1,也不是2, 是1.5, 这样会更精确。
+*/
 
+cv::TermCriteria(int type, int maxCount, double epsilon);
 
+//type为 cv::TermCriteria::MAX_ITER = cv::TermCriteria::COUNT (有限迭代次数) 
+//或者 cv::TermCriteria::EPS (误差参数， 接近此程度就可以退出)
 
-
-
-
-
+//如果终止条件包含cv::TermCriteria::MAX_ITER，就是告诉算法迭代maxCount后终止；
+//同理终止条件包含cv::TermCriteria::EPS，就是告诉算法在与算法收敛相关的某些度量降到epsilon以下后终止
 ```
 
