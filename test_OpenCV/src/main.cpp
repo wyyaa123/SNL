@@ -24,9 +24,9 @@ void findCornerPoints (int argc, char** argv) {
 
     cv::goodFeaturesToTrack(gray_img, corner_points, 100, 0.1, 10); //查找像素级角点
 
-    cv::TermCriteria criteria(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 40, 0.01);
+    cv::TermCriteria criteria(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 40, 0.01);//最大迭代次数为40， 精度为精确到0.01
 
-    cv::cornerSubPix(gray_img, corner_points, cv::Size(5, 5), cv::Size(-1, -1), criteria);
+    cv::cornerSubPix(gray_img, corner_points, cv::Size(5, 5), cv::Size(-1, -1), criteria);///查找亚像素角点
 
     for(auto& point : corner_points) {
         auto random1 = getRandomNum(0, 255);
