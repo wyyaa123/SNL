@@ -11,7 +11,7 @@ void LK_opticalFlow (int argc, char** argv);
 
 int main (int argc, char** argv) {
 
-    findCornerPoints(argc, argv);
+    LK_opticalFlow(argc, argv);
 
     return 0;
 }
@@ -44,6 +44,9 @@ void findCornerPoints (int argc, char** argv) {
 }
 
 void LK_opticalFlow (int argc, char** argv) {
+
+    clock_t beg = clock();
+
     /*
     void calcOpticalFlowPyrLK (cv::InputArray prevImg, 
                                cv::InputArray nextImg, 
@@ -93,6 +96,11 @@ void LK_opticalFlow (int argc, char** argv) {
         if(!features_found[i]) continue;
         cv::line(img3, corners1[i], corners2[i], (0, 0, 255), 2, cv::LINE_AA);
     }
+
+    clock_t end = clock();
+
+    cout << "total expend " << double(end - beg) / CLOCKS_PER_SEC << "seconds" << endl;
+
     cv::imshow("img1", img1);
     cv::imshow("img2", img2);
     cv::imshow("LK Optical Flow Example", img3);
