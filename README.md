@@ -244,6 +244,6 @@ lucas-Kanade(LK)稀疏光流算法：不能跟踪运动幅度大的像素运动
 
 ​	2、时间持续性：
 
-​			$I_x \cdot v + I_t = \frac{\part I}{\part t}|_t (\frac{\part x}{\part t}) + \frac{\part I}{\part t}|_{x(t)} = 0 \tag{1.2}$  $\rightarrow$ $v = -\frac{I_t}{I_x}$ 
+​			$I_x \cdot v + I_t = \frac{\part I}{\part t}|_t (\frac{\part x}{\part t}) + \frac{\part I}{\part t}|_{x(t)} = 0 \tag{1.2} \rightarrow v = -\frac{I_t}{I_x}$ 
 
 ​	
