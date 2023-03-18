@@ -21,33 +21,35 @@ void calVO(std::vector<cv::KeyPoint>& kpt1, std::vector<cv::KeyPoint>& kpt2, std
 void drawPlots(cv::InputOutputArray& img, vector<cv::Point2f>& points);
 
 int main (int argc, char** argv) {
+    
+    cv::Mat img1 = cv::imread("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\blur_1.png", cv::ImreadModes::IMREAD_COLOR);
+    cv::Mat img2 = cv::imread("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\blur_2.png", cv::ImreadModes::IMREAD_COLOR);
 
-    /*if(argc == 1) {
-        cout << "图像个数不对" << endl;
-        exit(-1);
-    }*/
+    std::vector<cv::KeyPoint> kpts1; 
+    std::vector<cv::KeyPoint> kpts2; 
+    cv::Mat desc1;
+    cv::Mat desc2;
+    cv::Mat res;
 
-    cv::Mat img1 = cv::imread("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\blur_2.png", cv::ImreadModes::IMREAD_COLOR);
-    cv::Mat img2 = cv::imread("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\gt_2.png", cv::ImreadModes::IMREAD_COLOR);
-    vector<cv::Point2f> _corner_points1;
-    vector<cv::Point2f> _corner_points2;
-    cv::TermCriteria criteria(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 300, 0.01);//最大迭代次数为40， 精度为精确到0.01
+    std::vector<cv::DMatch> matches;
 
-    findCornerPoints(img1, _corner_points1, criteria);
-    findCornerPoints(img2, _corner_points2, criteria);
+    clock_t beg = clock();
+    detect_and_compute("SURF", img1, kpts1, desc1);
+    detect_and_compute("SURF", img2, kpts2, desc2);
 
-    drawPlots(img1, _corner_points1);
-    drawPlots(img2, _corner_points2);
+    match("knn", desc1, desc2, matches);
 
-    cv::imshow("corner_points1", img1);
-    cv::imshow("corner_points2", img2);
+    double elsp_time = double(clock() - beg) / CLOCKS_PER_SEC;
+
+    cout << "total elasped time is " << elsp_time << "seconds" << endl;
+
+    cv::drawMatches(img1, kpts1, img2, kpts2, matches, res, cv::Scalar::all(-1), cv::Scalar::all(255), vector<char>(matches.size(), 1), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+    cv::imshow("result", res);
     cv::waitKey();
-
     cv::destroyAllWindows();
 
-    cv::imwrite("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\blur_2_point.png", img1);
-    cv::imwrite("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\gt_2_point.png", img2);
-
+    cv::imwrite("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\result_SURF2.jpg", res);
+    
     return 0;
 }
 
@@ -132,9 +134,24 @@ void calVO(std::vector<cv::KeyPoint>& kpt1, std::vector<cv::KeyPoint>& kpt2,
            cv::Point2f principal_point,
            double focal_length) {
 
+    std::vector<cv::Point2f> queryPoints;
+    std::vector<cv::Point2f> trainPoints;
 
+    std::for_each(matches.begin(), matches.end(), [&](const cv::DMatch& match) -> void {
+        queryPoints.emplace_back(kpt1[match.queryIdx].pt);
+        trainPoints.emplace_back(kpt1[match.trainIdx].pt);
+    });
+
+    cv::Mat essential_matrix = cv::findEssentialMat(queryPoints, trainPoints, focal_length, principal_point, cv::RANSAC, 1);
+    cv::recoverPose( essential_matrix, queryPoints, trainPoints, R, t, focal_length, principal_point );
 }
 
+/**
+ * @brief 在图像中画点，注意该函数会直接在输入中画点
+ * 
+ * @param img 输入图像
+ * @param points 点集合
+ */
 void drawPlots(cv::InputOutputArray& img, vector<cv::Point2f>& points) {
     for (auto& point : points) {
         auto random1 = SNL::getRandomNum(0, 255);
@@ -205,7 +222,7 @@ inline void detect_and_compute(std::string type, cv::Mat& img, std::vector<cv::K
 /**
  * @brief 用于特征点匹配
  * 
- * @param type 匹配方法：暴力匹配 bf; k-nearest neighbors(fnn)匹配
+ * @param type 匹配方法：暴力匹配 bf; k-nearest neighbors(fnn)匹配; Fast Library for Approximate Nearest Neighbors(flann)匹配
  * @param desc1 查询图像中的特征点的描述符
  * @param desc2 目标图像中的特征点的描述符
  * @param matches 输出的匹配结果
@@ -221,15 +238,10 @@ inline void match(string type, cv::Mat& desc1, cv::Mat& desc2, std::vector<cv::D
         desc_matcher.match(desc1, desc2, matches, cv::Mat());
     } else if (type == "knn") {
         cv::BFMatcher desc_matcher(cv::NORM_L2, true);
-        vector< vector<cv::DMatch> > vmatches;
+        vector<vector<cv::DMatch>> vmatches;
         desc_matcher.knnMatch(desc1, desc2, vmatches, 1);
-        for (int i = 0; i < static_cast<int>(vmatches.size()); ++i) {
-            if (!vmatches[i].size()) {
-                continue;
-            }
-            matches.push_back(vmatches[i][0]);
-        }
-    } else if (type == "flnn") {
+        for (int i = 0; i < static_cast<int>(vmatches.size()); ++i) { if (!vmatches[i].size()) continue;  matches.push_back(vmatches[i][0]); }
+    } else if (type == "flann") {
         cv::FlannBasedMatcher flnn_matcher;
         flnn_matcher.match(desc1, desc2, matches);
     }
