@@ -1,46 +1,63 @@
 ﻿#include <opencv2/opencv.hpp>
+#include <opencv2/xfeatures2d.hpp>
+#include <Eigen/Core>
+#include <Eigen/Dense>
 #include <iostream>
 #include <vector>
 
 #include "../include/randomNum.hpp"
 using namespace std;
 
-void findCornerPoints (int argc, char** argv);
+void findCornerPoints(cv::InputOutputArray&, cv::InputOutputArray&, const cv::TermCriteria&);
 
-void LK_opticalFlow (int argc, char** argv);
+void match(string type, cv::Mat& desc1, cv::Mat& desc2, std::vector<cv::DMatch>& matches);
+
+void detect_and_compute(std::string type, cv::Mat& img, std::vector<cv::KeyPoint>& kpts, cv::Mat& desc);
+
+void LK_opticalFlow(int argc, char** argv);
+
+void calVO(std::vector<cv::KeyPoint>& kpt1, std::vector<cv::KeyPoint>& kpt2, std::vector<cv::DMatch>& matches, cv::Mat& R, cv::Mat& t, vector<cv::Point3f>& points);
+
+void drawPlots(cv::InputOutputArray& img, vector<cv::Point2f>& points);
 
 int main (int argc, char** argv) {
 
-    LK_opticalFlow(argc, argv);
+    /*if(argc == 1) {
+        cout << "图像个数不对" << endl;
+        exit(-1);
+    }*/
+
+    cv::Mat img1 = cv::imread("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\blur_2.png", cv::ImreadModes::IMREAD_COLOR);
+    cv::Mat img2 = cv::imread("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\gt_2.png", cv::ImreadModes::IMREAD_COLOR);
+    vector<cv::Point2f> _corner_points1;
+    vector<cv::Point2f> _corner_points2;
+    cv::TermCriteria criteria(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 300, 0.01);//最大迭代次数为40， 精度为精确到0.01
+
+    findCornerPoints(img1, _corner_points1, criteria);
+    findCornerPoints(img2, _corner_points2, criteria);
+
+    drawPlots(img1, _corner_points1);
+    drawPlots(img2, _corner_points2);
+
+    cv::imshow("corner_points1", img1);
+    cv::imshow("corner_points2", img2);
+    cv::waitKey();
+
+    cv::destroyAllWindows();
+
+    cv::imwrite("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\blur_2_point.png", img1);
+    cv::imwrite("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\gt_2_point.png", img2);
 
     return 0;
 }
 
-void findCornerPoints (int argc, char** argv) {
-    cv::Mat img = cv::imread(argv[1], cv::IMREAD_COLOR);
+void findCornerPoints (cv::InputOutputArray& _img, cv::InputOutputArray& _corner_points, const cv::TermCriteria& criteria) {
     cv::Mat gray_img;
+    cv::cvtColor(_img, gray_img, cv::COLOR_BGR2GRAY); //使用灰度图进行角点检测。
 
-    cv::cvtColor(img, gray_img, cv::COLOR_BGR2GRAY); //使用灰度图进行角点检测。
-    vector<cv::Point2f> corner_points;
+    cv::goodFeaturesToTrack(gray_img, _corner_points, 100, 0.1, 10); //查找像素级角点
 
-    cv::goodFeaturesToTrack(gray_img, corner_points, 100, 0.1, 10); //查找像素级角点
-
-    cv::TermCriteria criteria(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 40, 0.01);//最大迭代次数为40， 精度为精确到0.01
-
-    cv::cornerSubPix(gray_img, corner_points, cv::Size(5, 5), cv::Size(-1, -1), criteria);///查找亚像素角点
-
-    for(auto& point : corner_points) {
-        auto random1 = SNL::getRandomNum(0, 255);
-        auto random2 = SNL::getRandomNum(0, 255);
-        auto random3 = SNL::getRandomNum(0, 255);
-        cout << random1 << " " << random2 << " " << random3 << endl;
-        cv::circle(img, point, 5, (random1, random2, random3), -1); //着点
-    }
-
-    cv::imshow(argv[1], img);
-    cv::waitKey();
-
-    cv::destroyWindow(argv[1]);
+    cv::cornerSubPix(gray_img, _corner_points, cv::Size(5, 5), cv::Size(-1, -1), criteria);///查找亚像素角点
 }
 
 void LK_opticalFlow (int argc, char** argv) {
@@ -105,4 +122,116 @@ void LK_opticalFlow (int argc, char** argv) {
     cv::imshow("img2", img2);
     cv::imshow("LK Optical Flow Example", img3);
     cv::waitKey(0);
+}
+
+void calVO(std::vector<cv::KeyPoint>& kpt1, std::vector<cv::KeyPoint>& kpt2, std::vector<cv::DMatch>& matches, cv::Mat& R, cv::Mat& t, vector<cv::Point3f>& points) {
+    
+}
+
+void drawPlots(cv::InputOutputArray& img, vector<cv::Point2f>& points) {
+    for (auto& point : points) {
+        auto random1 = SNL::getRandomNum(0, 255);
+        auto random2 = SNL::getRandomNum(0, 255);
+        auto random3 = SNL::getRandomNum(0, 255);
+        cv::circle(img, point, 5, (random1, random2, random3), -1); //着点
+    }
+}
+
+/**
+ * @brief 计算关键子和描述符
+ * 
+ * @param type 使用的算法：ORB特征点, FAST角点, BLOB角点, SURF特征点, BRISK特征点, KAZE特征点, AKAZE特征点, FREAK角点, DAISY角点, BRIEF角点。使用时请输入他们的英文缩写
+ * @param img 用于提取角点/特征点的图像
+ * @param kpts 关键子
+ * @param desc 描述符
+ */
+inline void detect_and_compute(std::string type, cv::Mat& img, std::vector<cv::KeyPoint>& kpts, cv::Mat& desc) {
+    std::for_each(type.begin(), type.end(), [](char& c) ->void { c = std::tolower(c); });
+    if (type.find("fast") == 0) {
+        type = type.substr(4);
+        cv::Ptr<cv::FastFeatureDetector> detector = cv::FastFeatureDetector::create(10, true);
+        detector->detect(img, kpts);
+    }
+    if (type.find("blob") == 0) {
+        type = type.substr(4);
+        cv::Ptr<cv::SimpleBlobDetector> detector = cv::SimpleBlobDetector::create();
+        detector->detect(img, kpts);
+    }
+    if (type == "surf") {
+        cv::Ptr<cv::Feature2D> surf = cv::xfeatures2d::SURF::create(800.0);
+        surf->detectAndCompute(img, cv::Mat(), kpts, desc);
+    }
+    // if (type == "sift") {
+    //     Ptr<Feature2D> sift = SIFT::create();
+    //     sift->detectAndCompute(img, Mat(), kpts, desc);
+    // }
+    if (type == "orb") {
+        cv::Ptr<cv::ORB> orb = cv::ORB::create();
+        orb->detectAndCompute(img, cv::Mat(), kpts, desc);
+    }
+    if (type == "brisk") {
+        cv::Ptr<cv::BRISK> brisk = cv::BRISK::create();
+        brisk->detectAndCompute(img, cv::Mat(), kpts, desc);
+    }
+    if (type == "kaze") {
+        cv::Ptr<cv::KAZE> kaze = cv::KAZE::create();
+        kaze->detectAndCompute(img, cv::Mat(), kpts, desc);
+    }
+    if (type == "akaze") {
+        cv::Ptr<cv::AKAZE> akaze = cv::AKAZE::create();
+        akaze->detectAndCompute(img, cv::Mat(), kpts, desc);
+    }
+    if (type == "freak") { 
+        cv::Ptr<cv::xfeatures2d::FREAK> freak = cv::xfeatures2d::FREAK::create();
+        freak->compute(img, kpts, desc);
+    }
+    if (type == "daisy") {
+        cv::Ptr<cv::xfeatures2d::DAISY> daisy = cv::xfeatures2d::DAISY::create();
+        daisy->compute(img, kpts, desc);
+    }
+    if (type == "brief") {
+        cv::Ptr<cv::xfeatures2d::BriefDescriptorExtractor> brief = cv::xfeatures2d::BriefDescriptorExtractor::create(64);
+        brief->compute(img, kpts, desc);
+    }
+}
+
+/**
+ * @brief 用于特征点匹配
+ * 
+ * @param type 匹配方法：暴力匹配 bf; k-nearest neighbors(fnn)匹配
+ * @param desc1 查询图像中的特征点的描述符
+ * @param desc2 目标图像中的特征点的描述符
+ * @param matches 输出的匹配结果
+ */
+inline void match(string type, cv::Mat& desc1, cv::Mat& desc2, std::vector<cv::DMatch>& matches) {
+
+    const double kDistanceCoef = 4.0;
+    const int kMaxMatchingSize = 50;
+
+    matches.clear();
+    if (type == "bf") {
+        cv::BFMatcher desc_matcher(cv::NORM_L2, true); //欧几里得距离
+        desc_matcher.match(desc1, desc2, matches, cv::Mat());
+    } else if (type == "knn") {
+        cv::BFMatcher desc_matcher(cv::NORM_L2, true);
+        vector< vector<cv::DMatch> > vmatches;
+        desc_matcher.knnMatch(desc1, desc2, vmatches, 1);
+        for (int i = 0; i < static_cast<int>(vmatches.size()); ++i) {
+            if (!vmatches[i].size()) {
+                continue;
+            }
+            matches.push_back(vmatches[i][0]);
+        }
+    } else if (type == "flnn") {
+        cv::FlannBasedMatcher flnn_matcher;
+        flnn_matcher.match(desc1, desc2, matches);
+    }
+
+    std::sort(matches.begin(), matches.end());
+    while (matches.front().distance * kDistanceCoef < matches.back().distance) {
+        matches.pop_back();
+    }
+    while (matches.size() > kMaxMatchingSize) {
+        matches.pop_back();
+    }
 }

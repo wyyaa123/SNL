@@ -13,8 +13,16 @@ include_directories(
 # 将源代码添加到此项目的可执行文件。
 add_executable (main src/main.cpp )
 
+set(OpenCV_DIR "${VCPKG_INSTALLED_DIR}/x64-windows/share/opencv3")
 find_package(OpenCV REQUIRED)
 target_include_directories(main PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(main PRIVATE ${OpenCV_LIBS})
+
+find_package(Eigen3 REQUIRED)
+target_include_directories(main PRIVATE ${Eigen3_INCLUDE_DIRS})
+target_link_libraries(main PRIVATE ${Eigen3_LIBS})
+
+find_package(Ceres CONFIG REQUIRED)
+target_link_libraries(main PRIVATE Ceres::ceres)
 
 # TODO: 如有需要，请添加测试并安装目标。
