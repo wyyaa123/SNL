@@ -124,8 +124,15 @@ void LK_opticalFlow (int argc, char** argv) {
     cv::waitKey(0);
 }
 
-void calVO(std::vector<cv::KeyPoint>& kpt1, std::vector<cv::KeyPoint>& kpt2, std::vector<cv::DMatch>& matches, cv::Mat& R, cv::Mat& t, vector<cv::Point3f>& points) {
-    
+void calVO(std::vector<cv::KeyPoint>& kpt1, std::vector<cv::KeyPoint>& kpt2, 
+           std::vector<cv::DMatch>& matches, 
+           cv::Mat& R, cv::Mat& t, 
+           vector<cv::Point3f>& points,
+           vector<char>& match_mask, 
+           cv::Point2f principal_point,
+           double focal_length) {
+
+
 }
 
 void drawPlots(cv::InputOutputArray& img, vector<cv::Point2f>& points) {
