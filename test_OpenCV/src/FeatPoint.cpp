@@ -22,8 +22,8 @@ void drawPlots(cv::InputOutputArray& img, vector<cv::Point2f>& points);
 
 int main (int argc, char** argv) {
     
-    cv::Mat img1 = cv::imread("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\blur_1.png", cv::ImreadModes::IMREAD_COLOR);
-    cv::Mat img2 = cv::imread("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\blur_2.png", cv::ImreadModes::IMREAD_COLOR);
+    cv::Mat img1 = cv::imread("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\1.png", cv::ImreadModes::IMREAD_COLOR);
+    cv::Mat img2 = cv::imread("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\2.png", cv::ImreadModes::IMREAD_COLOR);
 
     std::vector<cv::KeyPoint> kpts1; 
     std::vector<cv::KeyPoint> kpts2; 
@@ -48,7 +48,7 @@ int main (int argc, char** argv) {
     cv::waitKey();
     cv::destroyAllWindows();
 
-    cv::imwrite("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\result_SURF2.jpg", res);
+    cv::imwrite("C:\\Users\\南九的橘猫\\Desktop\\SNL\\test_OpenCV\\images\\result3.jpg", res);
     
     return 0;
 }
