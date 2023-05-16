@@ -118,7 +118,7 @@ git pull
 /*
 但是对于双目摄像头，当场景中的物体与摄像头的距离远大于两个摄像头基线的距离时，无人机的双目视觉就退化成了单目视觉问题🐴。
 
-《学习OPenCV3》
+《学习OpenCV3》
 
 特征点：关键子（特征点的像素坐标），描述子（是一个向量，描述了该关键点周围像素的信息）
 
@@ -411,8 +411,56 @@ a(:) =
 ```c++
 /*
 梯度的方向是函数变化最快的方向，所以当函数中存在边缘时，一定有较大的梯度值，相反，当图像中有比较平滑的部分时，灰度值变化较小，则相应的梯度也较小，
+
+边缘是图像像素值快速变化的地方
 */
 ```
 
+## 2023年3月28日
 
+```
+如上图所示，fftshift实现的效果就是将低频信息迁移到中心，高频信息在四周，此时用滤波器相乘，频谱图中心的信息保留，即保留了低频成分，四周的信息归0，即去除了高频成分，这就实现了我们常说的低通滤波
+```
 
+## 2023年4月23日
+
+```
+加速度计测量的是载体相对于惯性空间的绝对加速度和引力加速度之差，称作“比力”（specific force），而不是载体的运动加速度。
+
+模糊核空间不变意为，在图像的各个像素点上，或者某块像素块上模糊核不
+变，换一句话说就是模糊核不受图像深度的不同而变化。相反，模糊核空间变化意为像素点或者像素块的模糊核是不一致的，主要受图像深度影响
+```
+
+## 2023年4月24日
+
+```
+从IMU测量中重建的模糊估计的偏差来自很多方面，包括陀螺仪和加速度计误差随时间的累积，相机曝光和IMU启动时间之间的未知延迟，IMU随机游走噪声，相机内参矩阵的不准确校准，以及恒定重力假设的无效性。由于模糊估计中的小误差也会导致去模糊的假象，基于IMU的模糊核估计对于(10)中的非盲目去模糊是不够准确的
+```
+
+## 2023年4月27日
+
+```
+雅可比矩阵：在向量分析中，雅可比矩阵是函数的一阶偏导数以一定方式排列成的矩阵，其行列式称为雅可比行列式。
+```
+
+## 2023年5月6日
+
+ - 群：只有一个良好的运算的集合称为群
+   - 群的四个属性
+     1. 封闭性:  $\forall a_1, a_2 \in A, a_1 \cdot a_2 \in A;$ 
+     2. 结合律:  $\forall a_1, a_2, a_3 \in A, (a_1 \cdot a_2) \cdot a_3 = a_1 \cdot ( a_2 \cdot a_3 );$
+     3. 幺元:  $\exists a_0 \in A, s.t. \forall a \in A, a_0 \cdot a = a \cdot a_0 = a;$
+     4. 逆: $\forall a \in A, \exists a^{-1} \in A \ \ \ s.t. \ a \cdot a^{-1} = a_0.$
+- 李群$so(3)$指的是由旋转矩阵组成的集合，经过对数映射后就会映射到$\mathfrak {so}(3)$ 该过程描述为$log(\boldsymbol{R})=\frac{\varphi \cdot (\boldsymbol{R} - \boldsymbol{R}^T)}{2\sin(\varphi)}$，$\mathfrak {so}(3)$ 上的矩阵是由旋转向量对应的反对称矩阵组成的。相反$\mathfrak {so}(3)$上的矩阵通过指数映射后会映射到$so(3)$上，该过程描述为$Exp(\vec{\phi}) = exp(\vec{\phi}^{\wedge})=\boldsymbol{I} + \frac{\sin{\lVert \vec{\phi} \rVert}}{\lVert \vec{\phi} \rVert} \vec \phi ^ {\wedge} + \frac{1-\cos{\lVert \vec \phi \rVert}}{\lVert \vec \phi \rVert ^ {2}}(\vec \phi ^ {\wedge})^2$  
+
+## 2023年5月7日
+
+- 克罗因内积：指两个不满足矩阵乘法维数的矩阵的运算, 例：
+
+    $\boldsymbol{B}_{pq},\boldsymbol{A}_{mn}=\left(\begin{array}{1} a_{11} & \cdots & a_{1n} \\ \vdots & \ddots & \vdots \\ a_{m1} & \cdots & a_{mn}\end{array}\right), \boldsymbol{A}_{mn} \otimes \boldsymbol{B}_{pq} = \left(\begin{array}{1} a_{11} \cdot \boldsymbol{B} & \cdots & a_{1n} \cdot \boldsymbol{B} \\ \vdots & \ddots & \vdots \\ a_{m1} \cdot \boldsymbol{B} & \cdots & a_{mn} \cdot \boldsymbol{B} \end{array}\right)$
+
+​		所得到的矩阵是一个$mq \times nq$的矩阵
+
+## 2023年5月16日
+
+- 傅里叶变换处理非平稳信号有天生缺陷。它只能获取**一段信号总体上包含哪些频率的成分**，但是**对各成分出现的时刻并无所知**。因此时域相差很大的两个信号，可能频谱图一样。
